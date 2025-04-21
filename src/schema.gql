@@ -1,0 +1,296 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type oneAttachmentTypeResponse {
+  public_id: String!
+  secure_url: String!
+}
+
+type oneCategoryResponse {
+  _id: ID!
+  createdAt: DateTime
+  createdBy: oneUserResponse!
+  folderId: String!
+  logo: oneAttachmentTypeResponse!
+  name: String!
+  slug: String!
+  updatedAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type PaginationCategoryResponse {
+  page: Float!
+  totalCount: Float!
+  totalPages: Float!
+  data: [oneCategoryResponse!]!
+}
+
+type oneSubCategoryResponse {
+  _id: ID!
+  categoryId: oneCategoryResponse!
+  createdAt: DateTime
+  folderId: String!
+  logo: oneAttachmentTypeResponse!
+  name: String!
+  slug: String!
+  updatedAt: DateTime
+}
+
+type PaginationSubCategoryResponse {
+  page: Float!
+  totalCount: Float!
+  totalPages: Float!
+  data: [oneCategoryResponse!]!
+}
+
+type oneBrandResponse {
+  _id: ID!
+  folderId: String!
+  logo: oneAttachmentTypeResponse!
+  name: String!
+  slug: String!
+  updatedAt: DateTime!
+  createdAt: DateTime!
+}
+
+type oneProductResponse {
+  _id: ID!
+  name: String!
+  brandId: oneBrandResponse
+  subCategoryId: oneSubCategoryResponse!
+  color: [Color!]
+  description: String
+  finalPrice: Float!
+  slug: String!
+  mainImage: oneAttachmentTypeResponse!
+  images: [oneAttachmentTypeResponse!]
+  originalPrice: Float!
+  discountPercent: Float
+  rate: Float!
+  size: [Size!]
+  stock: Float!
+  folderId: String!
+  createdAt: DateTime
+  vendorId: oneUserResponse
+  updatedAt: DateTime
+}
+
+enum Color {
+  red
+  blue
+  green
+  yellow
+  purple
+  orange
+  pink
+  white
+  black
+  gray
+  brown
+}
+
+enum Size {
+  small
+  medium
+  large
+  XLarge
+  XXLarge
+  XXXLarge
+}
+
+type PaginationProductsResponse {
+  page: Float!
+  totalCount: Float!
+  totalPages: Float!
+  data: [oneProductResponse!]!
+}
+
+type IOrderProductResponse {
+  _id: ID!
+  finalPrice: Float!
+  name: String!
+  image: String!
+  quantity: Float!
+  unitPrice: Float!
+  productId: oneProductResponse!
+}
+
+type oneOrderResponse {
+  _id: ID!
+  address: String!
+  note: String
+  products: [IOrderProductResponse!]!
+  createdBy: oneUserResponse!
+  updatedBy: ID
+  couponId: ID
+  paidAt: DateTime
+  intentId: String
+  rejectedReason: String
+  discount: Float
+  refundAmount: Float
+  refundDate: DateTime
+  totalFinalPrice: Float
+  totalPriceBeforeDiscount: Float
+  status: OrderStatus!
+  expiresAt: DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  phone: String!
+  paymentWay: PaymentWayType!
+}
+
+enum OrderStatus {
+  pending
+  processing
+  placed
+  delivered
+  canceled
+  refunded
+}
+
+enum PaymentWayType {
+  cash
+  card
+  creditCard
+  payPal
+  kNet
+  applePay
+  googlePay
+  stcPay
+  mada
+  visa
+  masterCard
+}
+
+type oneUserResponse {
+  _id: ID!
+  DOB: DateTime!
+  address: String!
+  email: String!
+  gender: GenderTypes!
+  fName: String!
+  lName: String!
+  phone: String!
+  role: RoleTypes!
+  password: String!
+  profile_img: oneAttachmentTypeResponse
+}
+
+enum GenderTypes {
+  male
+  female
+}
+
+enum RoleTypes {
+  superAdmin
+  admin
+  vendor
+  user
+  guest
+}
+
+type IOrdersVendorResponse {
+  finalPrice: Float!
+  orderId: oneOrderResponse!
+  productId: oneProductResponse!
+  quantity: Float!
+}
+
+type oneVendorSales {
+  _id: ID!
+  orders: [IOrdersVendorResponse!]
+  totalSales: Float!
+  userId: oneUserResponse
+}
+
+type ICartProductResponse {
+  _id: ID!
+  finalPrice: Float!
+  productId: oneProductResponse!
+  quantity: Float!
+}
+
+type oneCartResponse {
+  _id: ID!
+  createdAt: DateTime!
+  products: [ICartProductResponse!]!
+  subTotal: Float!
+  updatedAt: DateTime
+  userId: oneUserResponse!
+}
+
+type Query {
+  deleteOneUser(ID: getUserIdDto!): oneUserResponse!
+  deleteManyUser(IDs: [getUserIdDto!]!): [oneUserResponse!]!
+  deleteProduct(ID: oneProductIdDto!): oneProductResponse!
+  getVendorSales: oneVendorSales!
+  listOrders: [oneOrderResponse!]!
+  ProductList(filterProduct: filterProductsDto!): PaginationProductsResponse!
+  CategoryList(categoryFilter: CategoryFilterDto!): PaginationCategoryResponse!
+  SubCategoryList(subCategoryFilter: filterSubCategoryDto!): PaginationSubCategoryResponse!
+}
+
+input getUserIdDto {
+  """Example field (placeholder)"""
+  userId: ID!
+}
+
+input oneProductIdDto {
+  """Example field (placeholder)"""
+  productId: ID!
+}
+
+input filterProductsDto {
+  page: String
+  limit: String
+  sort: String
+  name: String
+  minPrice: String
+  maxPrice: String
+  minRate: String
+  maxRate: String
+  minDiscount: String
+  maxDiscount: String
+  minStockQuantity: String
+  maxStockQuantity: String
+  subCategoryId: ID!
+  categoryId: ID!
+}
+
+input CategoryFilterDto {
+  page: String
+  limit: String
+  sort: String
+  name: String
+}
+
+input filterSubCategoryDto {
+  page: String
+  limit: String
+  sort: String
+  name: String
+  categoryId: ID!
+}
+
+type Mutation {
+  CreateOrder(orderInputs: createOrderDto!): oneOrderResponse!
+  CreateCart(CartInputs: createCartDto!): oneCartResponse!
+}
+
+input createOrderDto {
+  address: String!
+  note: String
+  paymentWay: PaymentWayType!
+  phone: String!
+  couponId: ID
+}
+
+input createCartDto {
+  productId: ID!
+  quantity: String!
+}
