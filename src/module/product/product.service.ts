@@ -343,10 +343,6 @@ export class ProductService {
       throw new NotFoundException('Product not found or not created by you');
     }
 
-    await this.productRepositoryService.deleteOne({
-      filter: { _id: productId },
-    });
-
     await this.reviewRepositoryService.deleteMany({
       filter: { productId: product._id },
     });
@@ -366,6 +362,10 @@ export class ProductService {
     });
 
     await this.uploadCloudFileService.deleteFileByPrefix(folder);
+
+    await this.productRepositoryService.deleteOne({
+      filter: { _id: productId },
+    });
 
     return { message: 'Product deleted successfully' };
   }
